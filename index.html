@@ -83,17 +83,31 @@ p.lead b{color:var(--ink)}
 .pframe.shake{animation:shake .5s}
 @keyframes shake{20%,60%{transform:translateX(-6px) rotate(-2deg)}40%,80%{transform:translateX(6px) rotate(2deg)}}
 #s3{gap:10px;padding-top:16px}
-.us{width:min(48vw,200px);aspect-ratio:1;border-radius:22px;overflow:hidden;border:5px solid #fff;
-  box-shadow:0 12px 28px rgba(196,47,72,.18);flex:none}
-.us img{width:100%;height:100%;object-fit:cover}
-.final{gap:12px}
+.final{gap:10px}
+/* last page: a beating heart, then I punch through it */
+.ily{font:700 clamp(40px,13vw,60px)/1 Fredoka,sans-serif;color:var(--rose);letter-spacing:.01em;
+  text-shadow:0 3px 0 #fff,0 6px 0 var(--pink);transform:scale(0);opacity:0}
+.ily.on{animation:ilyIn .6s var(--ease-spring) forwards, jiggle 1.6s 1s var(--ease-spring) infinite}
+@keyframes ilyIn{0%{transform:scale(0) rotate(-8deg);opacity:0}100%{transform:none;opacity:1}}
+.punch{position:relative;width:min(56vw,230px,30dvh);aspect-ratio:1;flex:none}
+.punch img{position:absolute;inset:-20%;width:140%;height:140%;object-fit:cover;
+  -webkit-mask-image:radial-gradient(circle,#000 58%,transparent 71%);mask-image:radial-gradient(circle,#000 58%,transparent 71%)}
+.punch .heartpic{animation:beat .8s ease-in-out infinite}
+.punch .hit{opacity:0}
+.punch.done .heartpic{display:none}
+.punch.done .hit{opacity:1;animation:burst .5s var(--ease-spring)}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.1)}30%{transform:scale(.97)}45%{transform:scale(1.06)}}
+@keyframes burst{0%{transform:scale(.7) rotate(-4deg)}60%{transform:scale(1.12) rotate(2deg)}100%{transform:none}}
+.bit{position:absolute;left:50%;top:50%;width:12px;height:9px;background:var(--rose);border-radius:2px;pointer-events:none;
+  animation:fly .9s var(--ease-out) forwards}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 
 /* finale */
 .final h1{font-size:clamp(32px,9.5vw,46px)}
 .final .ice{white-space:nowrap;font:700 clamp(40px,12.5vw,64px)/1 Fredoka,sans-serif;color:var(--rose);display:inline-block;
   animation:jiggle 1.6s var(--ease-spring) infinite;text-shadow:0 4px 0 #fff,0 7px 0 var(--pink)}
 @keyframes jiggle{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg) scale(1.04)}}
-.stretch{display:inline-block;animation:stretch 2.2s ease-in-out infinite}
+.stretch{display:inline-block;margin:0 .12em 0 .3em;animation:stretch 2.2s ease-in-out infinite}
 @keyframes stretch{0%,100%{transform:scaleX(1)}50%{transform:scaleX(1.25);letter-spacing:.04em}}
 
 .heart{position:fixed;bottom:-40px;pointer-events:none;font-size:24px;animation:rise linear forwards;z-index:5}
@@ -144,7 +158,11 @@ p.lead b{color:var(--ink)}
   </section>
 
   <section class="step final" id="s4" aria-label="Tomorrow">
-    <div class="us"><img src="img/us.jpg" alt="Clay you and me, smiling together"></div>
+    <div class="ily" id="ily">I LOVE YOU</div>
+    <div class="punch" id="punch" role="img" aria-label="A beating heart, then clay me punching through it">
+      <img class="heartpic" src="img/heart.jpg" alt="">
+      <img class="hit" src="img/punch.jpg" alt="">
+    </div>
     <p class="hand">a little warning</p>
     <h1>Tomorrow is going to be an amazing day.</h1>
     <p class="lead">Get ready and&nbsp;<b class="stretch">stretch</b>,<br>because I'm in the mood for an</p>
@@ -206,7 +224,24 @@ function go(id){
   setTimeout(() => document.querySelectorAll('.step.off').forEach(s => s.classList.remove('off')), 500);
   $('#' + id).classList.add('on');
   tone(660, .15, 'triangle');
-  if(id === 's4'){ chime(); hearts(30); }
+  if(id === 's4') punchThrough();
+}
+// heart beats a few times, then POW
+let punchTimer;
+function punchThrough(){
+  const p = $('#punch'), t = $('#ily');
+  clearTimeout(punchTimer); p.classList.remove('done'); t.classList.remove('on');
+  punchTimer = setTimeout(() => {
+    p.classList.add('done'); t.classList.add('on');
+    tone(90, .25, 'sawtooth', .2); setTimeout(chime, 250); hearts(30);
+    for(let i = 0; i < 16; i++){
+      const b = document.createElement('span'), a = Math.random() * 6.28, d = 90 + Math.random() * 70;
+      b.className = 'bit';
+      b.style.setProperty('--x', Math.cos(a) * d + 'px'); b.style.setProperty('--y', Math.sin(a) * d + 'px');
+      b.style.setProperty('--r', Math.random() * 540 + 'deg');
+      p.appendChild(b); setTimeout(() => b.remove(), 1000);
+    }
+  }, 2500);
 }
 $('#go1').onclick = () => { chime(); go('s2'); };
 document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => go(b.dataset.next)));
