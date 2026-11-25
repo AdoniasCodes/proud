@@ -59,7 +59,7 @@ p.lead b{color:var(--ink)}
 /* promises */
 .promises{display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px}
 .card{position:relative;display:flex;align-items:center;gap:14px;text-align:left;width:100%;cursor:pointer;
-  background:var(--paper);border:2px dashed var(--pink);border-radius:20px;padding:16px 18px;min-height:74px;
+  background:var(--paper);border:2px dashed var(--pink);border-radius:20px;padding:11px 16px;min-height:62px;
   transition:transform 160ms var(--ease-out),background .3s,border-color .3s}
 .card:active{transform:scale(.97)}
 .card .num{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
@@ -73,6 +73,20 @@ p.lead b{color:var(--ink)}
 .card.open .hide{display:none}
 .card.open .show{display:block}
 @keyframes pop{0%{transform:scale(.92)}100%{transform:none}}
+/* photo frame that shows the last opened promise */
+.pframe{position:relative;width:min(44vw,180px,26dvh);aspect-ratio:1;border-radius:22px;overflow:hidden;background:var(--paper);
+  border:5px solid #fff;box-shadow:0 12px 28px rgba(196,47,72,.18);display:grid;place-items:center;
+  font:700 54px Fredoka,sans-serif;color:var(--pink);flex:none}
+.pframe img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(.9);
+  transition:opacity .35s var(--ease-out),transform .45s var(--ease-spring)}
+.pframe img.show{opacity:1;transform:none}
+.pframe.shake{animation:shake .5s}
+@keyframes shake{20%,60%{transform:translateX(-6px) rotate(-2deg)}40%,80%{transform:translateX(6px) rotate(2deg)}}
+#s3{gap:10px;padding-top:16px}
+.us{width:min(48vw,200px);aspect-ratio:1;border-radius:22px;overflow:hidden;border:5px solid #fff;
+  box-shadow:0 12px 28px rgba(196,47,72,.18);flex:none}
+.us img{width:100%;height:100%;object-fit:cover}
+.final{gap:12px}
 
 /* finale */
 .final h1{font-size:clamp(32px,9.5vw,46px)}
@@ -115,6 +129,11 @@ p.lead b{color:var(--ink)}
 
   <section class="step" id="s3" aria-label="Three promises">
     <h2>3 simple promises</h2>
+    <div class="pframe" id="pframe" aria-live="polite">?
+      <img src="img/p1.jpg" alt="Clay us, smiling on a brand new bed">
+      <img src="img/p2.jpg" alt="Clay us, smiling on my fixed couch">
+      <img src="img/p3.jpg" alt="Clay us, laughing nervously in the broken bed and couch">
+    </div>
     <p class="hand">tap each one</p>
     <div class="promises">
       <button class="card"><span class="num">1</span><span class="txt"><span class="hide">Tap to open</span><span class="show">I'll buy a new bed. 🛏️<small>A real one. A grown-up one.</small></span></span></button>
@@ -125,6 +144,7 @@ p.lead b{color:var(--ink)}
   </section>
 
   <section class="step final" id="s4" aria-label="Tomorrow">
+    <div class="us"><img src="img/us.jpg" alt="Clay you and me, smiling together"></div>
     <p class="hand">a little warning</p>
     <h1>Tomorrow is going to be an amazing day.</h1>
     <p class="lead">Get ready and&nbsp;<b class="stretch">stretch</b>,<br>because I'm in the mood for an</p>
@@ -192,13 +212,15 @@ $('#go1').onclick = () => { chime(); go('s2'); };
 document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => go(b.dataset.next)));
 
 const cards = [...document.querySelectorAll('.card')];
+const pics = [...document.querySelectorAll('#pframe img')];
 cards.forEach((c, i) => c.onclick = () => {
   if(c.classList.contains('open')) return;
   c.classList.add('open'); tone(440 + i * 120, .18, 'triangle');
-  if(i === 2) hearts(10);
+  pics.forEach((p, k) => p.classList.toggle('show', k === i));
+  if(i === 2){ hearts(10); $('#pframe').classList.add('shake'); setTimeout(() => $('#pframe').classList.remove('shake'), 600); }
   if(cards.every(x => x.classList.contains('open'))) $('#go3').hidden = false;
 });
-$('#restart').onclick = () => { cards.forEach(c => c.classList.remove('open')); $('#go3').hidden = true; go('s1'); play(); };
+$('#restart').onclick = () => { cards.forEach(c => c.classList.remove('open')); pics.forEach(p => p.classList.remove('show')); $('#go3').hidden = true; go('s1'); play(); };
 </script>
 </body>
 </html>
