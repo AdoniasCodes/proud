@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F3DBD1">
+<title>For you, Hermela</title>
+<meta property="og:title" content="Something grew for you">
+<meta property="og:description" content="Open it. Smile.">
+<meta property="og:image" content="https://adoniascodes.github.io/proud/img/f6.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌷</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3DBD1; --paper:#FFFBF7; --ink:#3A2128; --soft:#86616A;
+  --rose:#E8465F; --rose-d:#C42F48; --pink:#FF9FB2; --gold:#F2B33D;
+  --ease-out:cubic-bezier(.23,1,.32,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+html,body{overscroll-behavior:none;background:var(--bg)}
+body{font-family:Nunito,system-ui,sans-serif;color:var(--ink);min-height:100dvh;overflow:hidden;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button{touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;font:inherit;color:inherit}
+img{display:block;max-width:100%;-webkit-user-drag:none;-webkit-touch-callout:none;user-select:none}
+
+.stage{position:relative;height:100dvh;max-width:480px;margin:0 auto}
+.step{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 22px 28px;text-align:center;gap:18px;opacity:0;transform:translateY(24px);pointer-events:none;
+  transition:opacity .5s var(--ease-out),transform .5s var(--ease-out)}
+.step.on{opacity:1;transform:none;pointer-events:auto}
+.step.off{opacity:0;transform:translateY(-24px)}
+
+h1,h2{font-family:Fredoka,sans-serif;font-weight:700;line-height:1.08;letter-spacing:-.01em}
+h1{font-size:clamp(30px,8.5vw,40px)}
+h2{font-size:clamp(26px,7.5vw,34px)}
+p.lead{font-size:18px;line-height:1.5;color:var(--soft);max-width:32ch}
+p.lead b{color:var(--ink)}
+.hand{font-family:Caveat,cursive;font-size:26px;color:var(--rose-d)}
+
+.btn{font:700 18px/1 Fredoka,sans-serif;border:0;border-radius:999px;cursor:pointer;background:var(--rose);color:#fff;
+  padding:17px 28px;min-width:220px;box-shadow:0 4px 0 var(--rose-d),0 10px 24px rgba(196,47,72,.25);
+  transition:transform 120ms var(--ease-out),box-shadow 120ms var(--ease-out)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--rose-d),0 4px 12px rgba(196,47,72,.2)}
+.btn[hidden]{display:none}
+
+/* stop motion */
+.film{position:relative;width:min(86vw,380px);aspect-ratio:1;border-radius:28px;overflow:hidden;background:var(--paper);
+  box-shadow:0 2px 0 rgba(58,33,40,.06),0 18px 40px rgba(196,47,72,.18);border:6px solid #fff}
+.film img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0}
+.film img.show{opacity:1}
+.film.wobble{animation:wob .35s steps(2) 2}
+@keyframes wob{50%{transform:rotate(-1deg) scale(1.01)}}
+.replay{font:600 15px Fredoka,sans-serif;background:none;border:0;color:var(--soft);padding:8px 14px;cursor:pointer;text-decoration:underline}
+
+/* promises */
+.promises{display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px}
+.card{position:relative;display:flex;align-items:center;gap:14px;text-align:left;width:100%;cursor:pointer;
+  background:var(--paper);border:2px dashed var(--pink);border-radius:20px;padding:16px 18px;min-height:74px;
+  transition:transform 160ms var(--ease-out),background .3s,border-color .3s}
+.card:active{transform:scale(.97)}
+.card .num{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  font:700 19px Fredoka,sans-serif;background:var(--pink);color:#fff;transition:background .3s}
+.card .txt{font:600 18px/1.25 Fredoka,sans-serif}
+.card .txt small{display:block;font:500 14px Nunito,sans-serif;color:var(--soft);margin-top:3px}
+.card .hide{color:var(--soft)}
+.card .show{display:none}
+.card.open{border-style:solid;border-color:var(--rose);animation:pop .4s var(--ease-spring)}
+.card.open .num{background:var(--rose)}
+.card.open .hide{display:none}
+.card.open .show{display:block}
+@keyframes pop{0%{transform:scale(.92)}100%{transform:none}}
+
+/* finale */
+.final h1{font-size:clamp(32px,9.5vw,46px)}
+.final .ice{white-space:nowrap;font:700 clamp(40px,12.5vw,64px)/1 Fredoka,sans-serif;color:var(--rose);display:inline-block;
+  animation:jiggle 1.6s var(--ease-spring) infinite;text-shadow:0 4px 0 #fff,0 7px 0 var(--pink)}
+@keyframes jiggle{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg) scale(1.04)}}
+.stretch{display:inline-block;animation:stretch 2.2s ease-in-out infinite}
+@keyframes stretch{0%,100%{transform:scaleX(1)}50%{transform:scaleX(1.25);letter-spacing:.04em}}
+
+.heart{position:fixed;bottom:-40px;pointer-events:none;font-size:24px;animation:rise linear forwards;z-index:5}
+@keyframes rise{to{transform:translateY(-110dvh) rotate(var(--r))}}
+
+@media (prefers-reduced-motion:reduce){
+  .final .ice,.stretch,.film.wobble{animation:none}
+  .step{transition:opacity .3s}
+}
+</style>
+</head>
+<body>
+<main class="stage">
+
+  <section class="step on" id="s1" aria-label="Surprise">
+    <div class="film" id="film" role="img" aria-label="A clay me pops out of a flower holding roses and chocolates">
+      <img src="img/f1.jpg" alt="" class="show"><img src="img/f2.jpg" alt=""><img src="img/f3.jpg" alt="">
+      <img src="img/f4.jpg" alt=""><img src="img/f5.jpg" alt=""><img src="img/f6.jpg" alt="">
+    </div>
+    <h1 id="hi" style="opacity:0;transition:opacity .5s">Surprise! These are for you 🌹🍫</h1>
+    <button class="btn" id="go1" hidden>Take them</button>
+    <button class="replay" id="replay" hidden>Watch me pop again</button>
+  </section>
+
+  <section class="step" id="s2" aria-label="I see you">
+    <p class="hand">okay, real talk for a second</p>
+    <h2>I see you, Hermela.</h2>
+    <p class="lead">You do so much for your family, and you never ask for a clap. I notice it. All of it.</p>
+    <p class="lead">Every time I watch you take care of things at home, I think the same thing: <b>that is the woman I want in mine.</b></p>
+    <p class="lead"><b>I am so proud of you.</b> ❤️</p>
+    <button class="btn" data-next="s3">Okay, now the promises</button>
+  </section>
+
+  <section class="step" id="s3" aria-label="Three promises">
+    <h2>3 simple promises</h2>
+    <p class="hand">tap each one</p>
+    <div class="promises">
+      <button class="card"><span class="num">1</span><span class="txt"><span class="hide">Tap to open</span><span class="show">I'll buy a new bed. 🛏️<small>A real one. A grown-up one.</small></span></span></button>
+      <button class="card"><span class="num">2</span><span class="txt"><span class="hide">Tap to open</span><span class="show">I'll fix my couch. 🛋️<small>Finally. Yes, I know.</small></span></span></button>
+      <button class="card"><span class="num">3</span><span class="txt"><span class="hide">Tap to open</span><span class="show">We're going to break both of them. 😏<small>During some... activities. You know.</small></span></span></button>
+    </div>
+    <button class="btn" id="go3" data-next="s4" hidden>One last thing</button>
+  </section>
+
+  <section class="step final" id="s4" aria-label="Tomorrow">
+    <p class="hand">a little warning</p>
+    <h1>Tomorrow is going to be an amazing day.</h1>
+    <p class="lead">Get ready and&nbsp;<b class="stretch">stretch</b>,<br>because I'm in the mood for an</p>
+    <span class="ice">ICE CREAM 🍦</span>
+    <p class="hand" style="margin-top:8px">Love you. Proud of you. Always. 🐼</p>
+    <button class="replay" id="restart">Start over</button>
+  </section>
+
+</main>
+<script>
+const $ = s => document.querySelector(s);
+let ac;
+function tone(freq, dur = .12, type = 'sine', vol = .15){
+  try{
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime;
+    o.type = type; o.frequency.setValueAtTime(freq, t); o.frequency.exponentialRampToValueAtTime(freq * 1.6, t + dur);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+    o.connect(g).connect(ac.destination); o.start(t); o.stop(t + dur);
+  }catch(e){}
+}
+const chime = () => [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tone(f, .25, 'triangle', .12), i * 110));
+
+function hearts(n = 18){
+  for(let i = 0; i < n; i++){
+    const h = document.createElement('span');
+    h.className = 'heart';
+    h.textContent = ['❤️','🌹','💕','🍫','🌷'][i % 5];
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.setProperty('--r', (Math.random() * 80 - 40) + 'deg');
+    h.style.animationDuration = 3 + Math.random() * 2.5 + 's';
+    h.style.animationDelay = Math.random() * 1.2 + 's';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 7000);
+  }
+}
+
+// stop motion: hold some frames longer so the pop has rhythm
+const frames = [...document.querySelectorAll('#film img')];
+const holds = [700, 450, 450, 500, 600, 0];
+function play(){
+  $('#hi').style.opacity = 0; $('#go1').hidden = $('#replay').hidden = true;
+  let i = 0;
+  frames.forEach((f, k) => f.classList.toggle('show', k === 0));
+  (function next(){
+    if(i === frames.length - 1){
+      $('#film').classList.add('wobble'); setTimeout(() => $('#film').classList.remove('wobble'), 800);
+      $('#hi').style.opacity = 1; $('#go1').hidden = $('#replay').hidden = false;
+      hearts(14); return;
+    }
+    setTimeout(() => { frames[i].classList.remove('show'); frames[++i].classList.add('show'); tone(300 + i * 60, .08, 'square', .05); next(); }, holds[i]);
+  })();
+}
+Promise.all(frames.map(f => f.decode ? f.decode().catch(() => {}) : 0)).then(() => setTimeout(play, 400));
+$('#replay').onclick = play;
+
+function go(id){
+  document.querySelector('.step.on').classList.replace('on', 'off');
+  setTimeout(() => document.querySelectorAll('.step.off').forEach(s => s.classList.remove('off')), 500);
+  $('#' + id).classList.add('on');
+  tone(660, .15, 'triangle');
+  if(id === 's4'){ chime(); hearts(30); }
+}
+$('#go1').onclick = () => { chime(); go('s2'); };
+document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => go(b.dataset.next)));
+
+const cards = [...document.querySelectorAll('.card')];
+cards.forEach((c, i) => c.onclick = () => {
+  if(c.classList.contains('open')) return;
+  c.classList.add('open'); tone(440 + i * 120, .18, 'triangle');
+  if(i === 2) hearts(10);
+  if(cards.every(x => x.classList.contains('open'))) $('#go3').hidden = false;
+});
+$('#restart').onclick = () => { cards.forEach(c => c.classList.remove('open')); $('#go3').hidden = true; go('s1'); play(); };
+</script>
+</body>
+</html>
